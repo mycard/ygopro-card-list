@@ -26,6 +26,6 @@ upload:
   script:
     - mkdir dist
     - mv pack.db dist/
-    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync /dist s3://mycard/ygopro-card-list
+    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync dist/ s3://mycard/ygopro-card-list
   only:
     - master
