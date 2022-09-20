@@ -1,26 +1,17 @@
 stages:
-  - prepare
   - build
   - deploy
 
 variables:
   GIT_DEPTH: "1"
 
-mat_sqlite:
-  stage: prepare
-  tags: 
-    - linux
-  script:
-    - apt update
-    - apt -y install sqlite3
-
 make_db:
   stage: build
   tags:
     - linux
-  dependencies:
-    - mat_sqlite
   script:
+    - apt update
+    - apt -y install sqlite3
     - sqlite3 pack.db < pack.db.sql
   artifacts:
     paths:
