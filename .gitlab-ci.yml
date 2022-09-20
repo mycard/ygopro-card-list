@@ -1,0 +1,40 @@
+stages:
+  - prepare
+  - build
+  - deploy
+
+variables:
+  GIT_DEPTH: "1"
+
+mat_sqlite:
+  stage: prepare
+  tags: 
+    - linux
+  script:
+    - apt update
+    - apt -y install sqlite3
+
+make_db:
+  stage: build
+  tags:
+    - linux
+  dependencies:
+    - mat_sqlite
+  script:
+    - sqlite3 pack.db < pack.db.sql
+  artifacts:
+    paths:
+      - pack.db
+
+upload:
+  stage: deploy
+  dependencies:
+    - make_db
+  tags: 
+    - linux
+  script:
+    - mkdir dist
+    - mv pack.db dist/
+    - aws s3 --endpoint=https://minio.mycard.moe:9000 sync /dist s3://mycard/ygopro-card-list
+  only:
+    - master
